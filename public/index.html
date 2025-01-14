@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CDP Support Chatbot</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+      }
+      #chatbox {
+        width: 300px;
+        height: 400px;
+        overflow-y: scroll;
+        border: 1px solid #ccc;
+        padding: 10px;
+      }
+      #chat-log {
+        margin-bottom: 10px;
+      }
+      input {
+        width: 80%;
+        padding: 5px;
+      }
+      button {
+        padding: 5px 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Welcome to CDP Support Chatbot</h1>
+    <div id="chatbox">
+      <div id="chat-log"></div>
+      <input type="text" id="chat-input" placeholder="Ask a question..." />
+      <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <script>
+      async function sendMessage() {
+        const input = document.getElementById("chat-input").value;
+        // Check if input is empty
+        if (!input.trim()) return;
+
+        const response = await fetch("/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ query: input }),
+        });
+
+        // Get the response from the server
+        const result = await response.json();
+
+        // Display the user message
+        document.getElementById(
+          "chat-log"
+        ).innerHTML += `<p><b>User:</b> ${input}</p>`;
+
+        // Display the bot response (Ensure 'response' key exists)
+        const botResponse = result.response
+          ? result.response.message
+          : "Sorry, I couldn't find an answer to your question.";
+        document.getElementById(
+          "chat-log"
+        ).innerHTML += `<p><b>Bot:</b> ${botResponse}</p>`;
+
+        // Clear the input field
+        document.getElementById("chat-input").value = "";
+
+        // Scroll to the bottom of the chat
+        document.getElementById("chatbox").scrollTop =
+          document.getElementById("chatbox").scrollHeight;
+      }
+    </script>
+  </body>
+</html>
