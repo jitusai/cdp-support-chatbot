@@ -1,3 +1,4 @@
+const path = require("path");
 const express = require("express");
 const bodyParser = require("body-parser");
 const axios = require("axios");
@@ -13,13 +14,15 @@ const axiosInstance = axios.create({
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(express.static("public"));
+app.use(express.static(path.join(__dirname, "docs")));
 
-app.set("view engine", "ejs");
+//app.set("view engine", "ejs");
+//app.set("views", path.join(__dirname, "views"));
 
 // Home route
 app.get("/", (req, res) => {
-  res.render("index");
+  //res.render("index");
+  res.sendFile(path.join(__dirname, "docs", "index.html"));
 });
 
 // Chatbot route
